@@ -1,0 +1,17 @@
+# .bashrc
+
+# Source global definitions
+if [ -f /etc/bashrc ]; then
+    . /etc/bashrc
+fi
+
+#. $HOME/.etc/enviro
+# Source scripts in .d
+for I in ~/.bashrc.d/*; do
+    [ -r $I ] && . $I
+done
+unset I
+
+__ENVIRO="himiko"
+PATH=$PATH:$HOME/.bin
+export PATH __ENVIRO

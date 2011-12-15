@@ -1,0 +1,44 @@
+# .bash_profile
+#TERM="konsole-256color"
+TERM="xterm-256color"
+
+# Get the aliases and functions
+if [ -f ~/.bashrc ]; then
+    . ~/.bashrc
+fi
+
+# Source terminal color settings and functions
+[ -r ~/.etc/term_colors.profile ] && . ~/.etc/term_colors.profile
+
+# Prompt decorators, what's left of them any way...refactored out some
+__retval_color() {
+    if [[ ${__retval} -eq 0 ]]; then
+        echo -ne "2"
+    else
+        echo -ne "1"
+    fi
+}
+__ps1_retval() {
+    echo -ne "\[\033[38;5;\$(__retval_color)m\]\${__retval}$(resetColor)"
+}
+
+
+
+GREP_COLOR="1;33;40"
+EDITOR="kate -u"
+LESS="-QR"
+GIT_PS1_SHOWDIRTYSTATE=1
+GIT_PS1_SHOWSTASHSTATE=1
+GIT_PS1_SHOWUNTRACKEDFILES=1
+PROMPT_COMMAND='export __retval="$?"'
+#PS1="$(addColor '[' 32)$(addColor '\u' 92)$(addColor '@' 42)$(addColor '\h' 161) $(addColor '\W' 208)$(addColor "\$(__git_ps1)" 118)$(addColor '][' 32)$(__ps1_retval)$(addColor ']\$' 32) "
+PS1="$(addColor '[' 39)$(addColor '\u' 123)$(addColor '@' 141)$(addColor '\h' 213) $(addColor '\W' 221)$(addColor "\$(__git_ps1)" 83)$(addColor '][' 39)$(__ps1_retval)$(addColor ']\$' 39) "
+
+
+alias ls='ls --color=always'
+alias grep='grep --color=always'
+alias hi='highlight -t 4 -O xterm256 -s andes -lz '
+
+export GREP_COLOR EDITOR LESS TERM PS1 GIT_PS1_SHOWDIRTYSTATE GIT_PS1_SHOWSTASHSTATE GIT_PS1_SHOWUNTRACKEDFILES
+
+eval "`dircolors -b $HOME/.dir_colors`"

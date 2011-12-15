@@ -1,0 +1,5 @@
+__ENVIRO="himiko"
+HOME="true"
+WORK=
+
+export __ENVIRO HOME WORK
