@@ -1,6 +1,12 @@
 # .bash_profile
-#TERM="konsole-256color"
-TERM="xterm-256color"
+
+if [ "${KDE_FULL_SESSION}" == "true" ]; then
+    TERM="konsole-256color"
+else
+    TERM="xterm-256color"
+fi
+#TERM="xterm-256color"
+
 
 # Get the aliases and functions
 if [ -f ~/.bashrc ]; then
@@ -9,6 +15,17 @@ fi
 
 # Source terminal color settings and functions
 [ -r ~/.etc/term_colors.profile ] && . ~/.etc/term_colors.profile
+
+# Find out which distro we are on...
+DISTRO='unknown'
+RHBASE=0
+if [ -r /etc/redhat-release ]; then
+    RHBASED=1
+    $(grep -q CentOS /etc/redhat-release) && DISTRO='CentOS'
+    $(grep -q Fedora /etc/redhat-release) && DISTRO='Fedora'
+    $(grep -q "Red Hat" /etc/redhat-release) && DISTRO='RHEL'
+fi
+export RHBASED DISTRO
 
 # Prompt decorators, what's left of them any way...refactored out some
 __retval_color() {
@@ -22,23 +39,56 @@ __ps1_retval() {
     echo -ne "\[\033[38;5;\$(__retval_color)m\]\${__retval}$(resetColor)"
 }
 
+shopt -s histappend
 
+KATE=`which kate 2> /dev/null`
+NANO=`which nano 2> /dev/null`
+
+if [ -x ${KATE} ]; then
+    EDITOR="kate -u"
+elif [ -x ${NANO} ]; then
+    EDITOR="nano -w"
+else
+    EDITOR=""
+    echo "env var EDITOR not set"
+fi
+unset KATE
+unset NANO
 
 GREP_COLOR="1;33;40"
-EDITOR="kate -u"
 LESS="-QR"
 GIT_PS1_SHOWDIRTYSTATE=1
 GIT_PS1_SHOWSTASHSTATE=1
 GIT_PS1_SHOWUNTRACKEDFILES=1
 PROMPT_COMMAND='export __retval="$?"'
-#PS1="$(addColor '[' 32)$(addColor '\u' 92)$(addColor '@' 42)$(addColor '\h' 161) $(addColor '\W' 208)$(addColor "\$(__git_ps1)" 118)$(addColor '][' 32)$(__ps1_retval)$(addColor ']\$' 32) "
-PS1="$(addColor '[' 39)$(addColor '\u' 123)$(addColor '@' 141)$(addColor '\h' 213) $(addColor '\W' 221)$(addColor "\$(__git_ps1)" 83)$(addColor '][' 39)$(__ps1_retval)$(addColor ']\$' 39) "
 
+if [ "${USER}" == "root" ]; then
+    USRCLR=196
+else
+    USRCLR=123
+fi
+PS1="$(addColor '[' 39)$(addColor '\u' ${USRCLR})$(addColor '@' 141)$(addColor '\h' 213) $(addColor '\W' 221)$(addColor "\$(__git_ps1)" 83)$(addColor '][' 39)$(__ps1_retval)$(addColor ']\$' 39) "
+
+if [ "${DISTRO}" == "Fedora" ]; then
+    PERLBREW_ROOT=${HOME}/Projects/.perlbrew.fedora
+    PYTHONBREW_ROOT=${HOME}/Projects/.pythonbrew.fedora
+elif [ "${DISTRO}" == "RHEL" ] || [ "${DISTRO}" == "CentOS" ]; then
+    PERLBREW_ROOT=${HOME}/Projects/.perlbrew.rhel
+    PYTHONBREW_ROOT=${HOME}/Projects/.pythonbrew.rhel
+else
+    echo "Unknown environment, not setting PERLBREW_ROOT and PYTHONBREW_ROOT"
+    PERLBREW_ROOT=''
+    PYTHONBREW_ROOT=''
+fi
 
 alias ls='ls --color=always'
 alias grep='grep --color=always'
 alias hi='highlight -t 4 -O xterm256 -s andes -lz '
+alias essh='TERM=linux ssh '
+alias rssh='ssh -l root '
 
-export GREP_COLOR EDITOR LESS TERM PS1 GIT_PS1_SHOWDIRTYSTATE GIT_PS1_SHOWSTASHSTATE GIT_PS1_SHOWUNTRACKEDFILES
+export GREP_COLOR EDITOR LESS TERM PS1 GIT_PS1_SHOWDIRTYSTATE GIT_PS1_SHOWSTASHSTATE GIT_PS1_SHOWUNTRACKEDFILES PERLBREW_ROOT PYTHONBREW_ROOT
+[ -r ${PERLBREW_ROOT}/etc/bashrc -a -s ${PERLBREW_ROOT}/etc/bashrc ] && source ${PERLBREW_ROOT}/etc/bashrc
+[ -r ${PYTHONBREW_ROOT}/etc/bashrc -a -s ${PYTHONBREW_ROOT}/etc/bashrc ] && source ${PYTHONBREW_ROOT}/etc/bashrc
 
 eval "`dircolors -b $HOME/.dir_colors`"
