@@ -1,0 +1,26 @@
+# .bashrc.d/editor
+
+KATE=`which kate 2> /dev/null`
+KWRITE=`which kwrite 2> /dev/null`
+NANO=`which nano 2> /dev/null`
+VI=`which vi 2> /dev/null`
+
+if [ -e "${KATE}" ] && [ -x "${KATE}" ]; then
+    EDITOR="${KATE} -u "
+elif [ -e "${KWRITE}" ] && [ -x "${KWRITE}" ]; then
+    EDITOR="${KWRITE} "
+elif [ -e "${NANO}" ] && [ -x "${NANO}" ]; then
+    EDITOR="${NANO} -w "
+elif [ -e "${VI}" ] && [ -x "${VI}" ]; then
+    EDITOR="${VI}"
+else
+    EDITOR=""
+    echo "env var EDITOR not set"
+fi
+
+unset KATE
+unset KWRITE
+unset NANO
+unset VI
+
+export EDITOR

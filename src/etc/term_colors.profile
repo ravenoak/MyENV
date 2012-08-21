@@ -3,6 +3,7 @@
 # http://en.wikipedia.org/wiki/ANSI_escape_code
 # http://www.frexx.de/xterm-256-notes/
 
+# This is to determine how many colors we have available to us to use.
 numColors=`tput colors`
 
 ESC="\033["
@@ -33,9 +34,23 @@ addColor() {
     echo -ne "$(fgColor ${color})${string}$(resetColor)"
 }
 
+# Prompt decorators, what's left of them any way...refactored out some
+__retval_color() {
+    if [[ ${__retval} -eq 0 ]]; then
+        echo -ne "2"
+    else
+        echo -ne "1"
+    fi
+}
+__ps1_retval() {
+    echo -ne "\[\033[38;5;\$(__retval_color)m\]\${__retval}$(resetColor)"
+}
 
-
-
+if [ "${USER}" == "root" ]; then
+    USRCLR=196
+else
+    USRCLR=123
+fi
 
 
 # regular colors

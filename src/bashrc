@@ -1,17 +1,67 @@
 # .bashrc
 
+ISHELL=0
+case "$-" in *i*) ISHELL=1;; esac
+export ISHELL
+
+# Find out which distro we are on...
+DISTRO='unknown'
+BASE='unknown'
+if [ -r /etc/redhat-release ]; then
+    BASE="RH"
+    $(grep -q CentOS /etc/redhat-release) && DISTRO='CentOS'
+    $(grep -q Fedora /etc/redhat-release) && DISTRO='Fedora'
+    $(grep -q "Red Hat" /etc/redhat-release) && DISTRO='RHEL'
+else
+    [ "$(uname)" == "Darwin" ] && DISTRO="OSX" && BASE="BSD"
+fi
+export BASE DISTRO
+
+# PATH control
+if [ "${DISTRO}" == "OSX" ]; then
+    PATH=/opt/local/bin:/opt/local/sbin:$PATH
+    export PATH
+fi
+
 # Source global definitions
 if [ -f /etc/bashrc ]; then
     . /etc/bashrc
 fi
 
-#. $HOME/.etc/enviro
-# Source scripts in .d
-for I in ~/.bashrc.d/*; do
+# Source non-interactive scripts in .d
+for I in ~/.bashrc.d/*.rc; do
     [ -r $I ] && . $I
 done
 unset I
 
-__ENVIRO="himiko"
-PATH=$PATH:$HOME/.bin
-export PATH __ENVIRO
+__ENVIRO=""
+export __ENVIRO
+
+# Only run this stuff if we are an interactive shell
+if [ "$ISHELL" -eq 1 ]; then
+    
+    # Source interactive scripts in .d    
+    for I in ~/.bashrc.d/*.rci; do
+        [ -r $I ] && . $I
+    done   
+    unset I
+    
+    # Source terminal color settings and functions
+    [ -r ~/.etc/term_colors.profile ] && . ~/.etc/term_colors.profile
+    
+    PS1="$(addColor '[' 39)$(addColor '\u' ${USRCLR})$(addColor '@' 141)$(addColor '\h' 213) $(addColor '\W' 221)$(addColor "\$(__git_ps1)" 83)$(addColor '][' 39)$(__ps1_retval)$(addColor ']\$' 39) "
+
+    GREP_COLOR="1;33;40"
+    LESS="-QR"
+    GIT_PS1_SHOWDIRTYSTATE=1
+    GIT_PS1_SHOWSTASHSTATE=1
+    GIT_PS1_SHOWUNTRACKEDFILES=1
+    PROMPT_COMMAND='export __retval="$?"'
+    shopt -s histappend
+    if [ "${DISTRO}" == "OSX" ] && [ -x /opt/local/bin/gdircolors ]; then
+        eval "`gdircolors -b $HOME/.dir_colors`"
+    elif [ -x /usr/bin/dircolors ]; then
+        eval "`dircolors -b $HOME/.dir_colors`"
+    fi
+    export GREP_COLOR LESS PS1 GIT_PS1_SHOWDIRTYSTATE GIT_PS1_SHOWSTASHSTATE GIT_PS1_SHOWUNTRACKEDFILES
+fi
