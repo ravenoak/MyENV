@@ -49,6 +49,9 @@ if [ "$ISHELL" -eq 1 ]; then
     # Source terminal color settings and functions
     [ -r ~/.etc/term_colors.profile ] && . ~/.etc/term_colors.profile
     
+    if [ "${DISTRO}" == "OSX" ]; then
+        . /opt/local/share/doc/git-core/contrib/completion/git-prompt.sh
+    fi
     PS1="$(addColor '[' 39)$(addColor '\u' ${USRCLR})$(addColor '@' 141)$(addColor '\h' 213) $(addColor '\W' 221)$(addColor "\$(__git_ps1)" 83)$(addColor '][' 39)$(__ps1_retval)$(addColor ']\$' 39) "
 
     GREP_COLOR="1;33;40"
