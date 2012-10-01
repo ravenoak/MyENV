@@ -7,13 +7,20 @@ export ISHELL
 # Find out which distro we are on...
 DISTRO='unknown'
 BASE='unknown'
-if [ -r /etc/redhat-release ]; then
+
+lsb_release=$(which lsb_release)
+if [ "X${lsb_release}" != "X" ]; then
+	DISTRO=$(lsb_release -i | sed 's/Distributor ID:\s*//')
+	[ "$DISTRO" == "Fedora" ] && BASE="RH"
+	[ "$DISTRO" == "Ubuntu" ] && BASE="Debian"
+elif [ -r /etc/redhat-release ]; then
     BASE="RH"
     $(grep -q CentOS /etc/redhat-release) && DISTRO='CentOS'
     $(grep -q Fedora /etc/redhat-release) && DISTRO='Fedora'
     $(grep -q "Red Hat" /etc/redhat-release) && DISTRO='RHEL'
-else
-    [ "$(uname)" == "Darwin" ] && DISTRO="OSX" && BASE="BSD"
+elif [ "$(uname)" == "Darwin" ]; then
+    DISTRO="OSX"
+    BASE="BSD"
 fi
 export BASE DISTRO
 
