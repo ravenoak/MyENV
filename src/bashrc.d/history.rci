@@ -1,0 +1,13 @@
+source ${HOME}/.etc/bash_history.conf
+
+if [ "$(grep -c ${HOSTNAME} ${HISTHOSTFILE})" == "1" ]; then
+    if [ ! -d "${HISTHOSTDIR}" ]; then
+        mkdir ${HISTHOSTDIR}
+    fi
+    if [ ! -f "${HISTHOSTDIR}/${HOSTNAME}" ]; then
+        touch ${HISTHOSTDIR}/${HOSTNAME}
+    fi
+   export HISTFILE="${HISTHOSTDIR}/${HOSTNAME}"
+fi
+
+export HISTCONTROL HISTSIZE HISTTIMEFORMAT

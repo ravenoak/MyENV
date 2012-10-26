@@ -1,5 +1,7 @@
 # .bashrc
 
+# TODO: Stick CDPATH in here somewhere
+
 ISHELL=0
 case "$-" in *i*) ISHELL=1;; esac
 export ISHELL
@@ -8,9 +10,9 @@ export ISHELL
 DISTRO='unknown'
 BASE='unknown'
 
-lsb_release=$(which lsb_release)
+lsb_release=$(which lsb_release 2> /dev/null)
 if [ "X${lsb_release}" != "X" ]; then
-	DISTRO=$(lsb_release -i | sed 's/Distributor ID:\s*//')
+	DISTRO=$(lsb_release -si)
 	[ "$DISTRO" == "Fedora" ] && BASE="RH"
 	[ "$DISTRO" == "Ubuntu" ] && BASE="Debian"
 elif [ -r /etc/redhat-release ]; then
