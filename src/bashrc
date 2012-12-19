@@ -13,11 +13,11 @@ BASE='unknown'
 lsb_release=$(which lsb_release 2> /dev/null)
 if [ "X${lsb_release}" != "X" ]; then
 	DISTRO=$(lsb_release -si)
-	[ "$DISTRO" == "Fedora" ] && BASE="RH"
-	[ "$DISTRO" == "Ubuntu" ] && BASE="Debian"
+	[ "${DISTRO}" == "Fedora" ] && BASE="RH"
+	[ "${DISTRO}" == "Ubuntu" ] && BASE="Debian"
 	DISTREL=$(lsb_release -sr)
-	[ "$DISTRO" == "Ubuntu" ] && DISTREL=$(echo ${DISTREL} | awk -F. '{ print $1 }')
-elif [ -r /etc/redhat-release ]; then
+	[ "${DISTRO}" == "Ubuntu" ] && DISTREL=$(echo ${DISTREL} | awk -F. '{ print $1 }')
+elif [ -r "/etc/redhat-release" ]; then
     BASE="RH"
     $(grep -q CentOS /etc/redhat-release) && DISTRO='CentOS'
     $(grep -q Fedora /etc/redhat-release) && DISTRO='Fedora'
@@ -36,33 +36,33 @@ export __ENVIRO
 
 # Determine where global bash definitions are
 if [ "${DISTRO}" == "Ubuntu" ]; then
-	BASHRC=/etc/bash.bashrc
+	BASHRC="/etc/bash.bashrc"
 else
-	BASHRC=/etc/bashrc
+	BASHRC="/etc/bashrc"
 fi
 
 # Source global definitions
-if [ -r ${BASHRC} ]; then
+if [ -r "${BASHRC}" ]; then
     source ${BASHRC}
 fi
 
 # Source non-interactive scripts in .d
 for I in ~/.bashrc.d/*.rc; do
-    [ -r $I ] && source $I
+    [ -r "${I}} ] && source ${I}
 done
 unset I
 
 # Only run this stuff if we are an interactive shell
-if [ "$ISHELL" -eq 1 ]; then
+if [ "${ISHELL}" -eq 1 ]; then
 	
 	# Source the global profile
-	if [ -r /etc/profile ]; then
+	if [ -r "/etc/profile" ]; then
 		source /etc/profile
 	fi
     
     # Source interactive scripts in .d    
     for I in ~/.bashrc.d/*.rci; do
-        [ -r $I ] && source $I
+        [ -r "${I}" ] && source ${I}
     done   
     unset I
     
@@ -76,7 +76,7 @@ if [ "$ISHELL" -eq 1 ]; then
 	else
 		GITPROMPT=''
     fi
-    [ -r $GITPROMPT ] && source $GITPROMPT
+    [ -r "${GITPROMPT}" ] && source $GITPROMPT
     PS1="$(addColor '[' 39)$(addColor '\u' ${USRCLR})$(addColor '@' 141)$(addColor '\h' 213) $(addColor '\W' 221)$(addColor "\$(__git_ps1)" 83)$(addColor '][' 39)$(__ps1_retval)$(addColor ']\$' 39) "
 
     GREP_COLOR="1;33;40"
