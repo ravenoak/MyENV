@@ -28,7 +28,7 @@ elif [ "$(uname)" == "Darwin" ]; then
 fi
 export BASE DISTRO
 
-if [ "${DISTRO}" == "Ubuntu" && "${DISTREL}" -lt "12" ]; then
+if [ "${DISTRO}" == "Ubuntu" ] && [ "${DISTREL}" -lt "12" ]; then
 	export TERM="xterm"
 fi
 __ENVIRO=""
@@ -48,7 +48,7 @@ fi
 
 # Source non-interactive scripts in .d
 for I in ~/.bashrc.d/*.rc; do
-    [ -r "${I}} ] && source ${I}
+    [ -r "${I}" ] && source ${I}
 done
 unset I
 
@@ -56,9 +56,9 @@ unset I
 if [ "${ISHELL}" -eq 1 ]; then
 	
 	# Source the global profile
-	if [ -r "/etc/profile" ]; then
-		source /etc/profile
-	fi
+	#if [ -r "/etc/profile" ]; then
+	#	source /etc/profile
+	#fi
     
     # Source interactive scripts in .d    
     for I in ~/.bashrc.d/*.rci; do
@@ -87,9 +87,9 @@ if [ "${ISHELL}" -eq 1 ]; then
     PROMPT_COMMAND='export __retval="$?"'
 
 	# /opt/local/bin/gdircolors is provided by 'coreutils' in macports
-    if [ "${DISTRO}" == "OSX" ] && [ -x /opt/local/bin/gdircolors ]; then
+    if [ "${DISTRO}" == "OSX" ] && [ -x "/opt/local/bin/gdircolors" ]; then
         eval "`gdircolors -b $HOME/.dir_colors`"
-    elif [ -x /usr/bin/dircolors ]; then
+    elif [ -x "/usr/bin/dircolors" ]; then
         eval "`dircolors -b $HOME/.dir_colors`"
     fi
     
