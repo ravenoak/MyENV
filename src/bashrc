@@ -52,6 +52,12 @@ for I in ~/.bashrc.d/*.rc; do
 done
 unset I
 
+# PATH control
+if [ "${DISTRO}" == "OSX" ]; then
+    PATH=/opt/local/bin:/opt/local/sbin:$PATH
+    export PATH
+fi
+
 # Only run this stuff if we are an interactive shell
 if [ "${ISHELL}" -eq 1 ]; then
 	
@@ -96,8 +102,3 @@ if [ "${ISHELL}" -eq 1 ]; then
     export GREP_COLOR LESS PS1 GIT_PS1_SHOWDIRTYSTATE GIT_PS1_SHOWSTASHSTATE GIT_PS1_SHOWUNTRACKEDFILES
 fi
 
-# PATH control
-if [ "${DISTRO}" == "OSX" ]; then
-    PATH=/opt/local/bin:/opt/local/sbin:$PATH
-    export PATH
-fi

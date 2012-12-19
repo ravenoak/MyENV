@@ -1,0 +1,5 @@
+syntax on
+filetype on
+set softtabstop=4 shiftwidth=4 expandtab
+au BufNewFile,BufRead *.dump set filetype=sql
+au BufNewFile,BufRead cf.* set filetype=cfengine
