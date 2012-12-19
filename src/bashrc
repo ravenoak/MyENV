@@ -15,6 +15,8 @@ if [ "X${lsb_release}" != "X" ]; then
 	DISTRO=$(lsb_release -si)
 	[ "$DISTRO" == "Fedora" ] && BASE="RH"
 	[ "$DISTRO" == "Ubuntu" ] && BASE="Debian"
+	DISTREL=$(lsb_release -sr)
+	[ "$DISTRO" == "Ubuntu" ] && DISTREL=$(echo ${DISTREL} | awk -F. '{ print $1 }')
 elif [ -r /etc/redhat-release ]; then
     BASE="RH"
     $(grep -q CentOS /etc/redhat-release) && DISTRO='CentOS'
@@ -26,41 +28,55 @@ elif [ "$(uname)" == "Darwin" ]; then
 fi
 export BASE DISTRO
 
-# PATH control
-if [ "${DISTRO}" == "OSX" ]; then
-    PATH=/opt/local/bin:/opt/local/sbin:$PATH
-    export PATH
+if [ "${DISTRO}" == "Ubuntu" && "${DISTREL}" -lt "12" ]; then
+	export TERM="xterm"
+fi
+__ENVIRO=""
+export __ENVIRO
+
+# Determine where global bash definitions are
+if [ "${DISTRO}" == "Ubuntu" ]; then
+	BASHRC=/etc/bash.bashrc
+else
+	BASHRC=/etc/bashrc
 fi
 
 # Source global definitions
-if [ -f /etc/bashrc ]; then
-    . /etc/bashrc
+if [ -r ${BASHRC} ]; then
+    source ${BASHRC}
 fi
 
 # Source non-interactive scripts in .d
 for I in ~/.bashrc.d/*.rc; do
-    [ -r $I ] && . $I
+    [ -r $I ] && source $I
 done
 unset I
 
-__ENVIRO=""
-export __ENVIRO
-
 # Only run this stuff if we are an interactive shell
 if [ "$ISHELL" -eq 1 ]; then
+	
+	# Source the global profile
+	if [ -r /etc/profile ]; then
+		source /etc/profile
+	fi
     
     # Source interactive scripts in .d    
     for I in ~/.bashrc.d/*.rci; do
-        [ -r $I ] && . $I
+        [ -r $I ] && source $I
     done   
     unset I
+    
+    shopt -s histappend
     
     # Source terminal color settings and functions
     [ -r ~/.etc/term_colors.profile ] && . ~/.etc/term_colors.profile
     
     if [ "${DISTRO}" == "OSX" ]; then
-        . /opt/local/share/doc/git-core/contrib/completion/git-prompt.sh
+        GITPROMPT=/opt/local/share/doc/git-core/contrib/completion/git-prompt.sh
+	else
+		GITPROMPT=''
     fi
+    [ -r $GITPROMPT ] && source $GITPROMPT
     PS1="$(addColor '[' 39)$(addColor '\u' ${USRCLR})$(addColor '@' 141)$(addColor '\h' 213) $(addColor '\W' 221)$(addColor "\$(__git_ps1)" 83)$(addColor '][' 39)$(__ps1_retval)$(addColor ']\$' 39) "
 
     GREP_COLOR="1;33;40"
@@ -69,11 +85,19 @@ if [ "$ISHELL" -eq 1 ]; then
     GIT_PS1_SHOWSTASHSTATE=1
     GIT_PS1_SHOWUNTRACKEDFILES=1
     PROMPT_COMMAND='export __retval="$?"'
-    shopt -s histappend
+
+	# /opt/local/bin/gdircolors is provided by 'coreutils' in macports
     if [ "${DISTRO}" == "OSX" ] && [ -x /opt/local/bin/gdircolors ]; then
         eval "`gdircolors -b $HOME/.dir_colors`"
     elif [ -x /usr/bin/dircolors ]; then
         eval "`dircolors -b $HOME/.dir_colors`"
     fi
+    
     export GREP_COLOR LESS PS1 GIT_PS1_SHOWDIRTYSTATE GIT_PS1_SHOWSTASHSTATE GIT_PS1_SHOWUNTRACKEDFILES
+fi
+
+# PATH control
+if [ "${DISTRO}" == "OSX" ]; then
+    PATH=/opt/local/bin:/opt/local/sbin:$PATH
+    export PATH
 fi

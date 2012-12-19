@@ -4,7 +4,11 @@ KATE=`which kate 2> /dev/null`
 KWRITE=`which kwrite 2> /dev/null`
 NANO=`which nano 2> /dev/null`
 VI=`which vi 2> /dev/null`
+VIM=`which vim 2> /dev/null`
 
+#if [ -e "${VIM}" ] && [ -x "${VIM}" ]; then
+#    EDITOR="${VIM}"
+#el
 if [ -e "${KATE}" ] && [ -x "${KATE}" ]; then
     EDITOR="${KATE} -u "
 elif [ -e "${KWRITE}" ] && [ -x "${KWRITE}" ]; then
@@ -22,5 +26,6 @@ unset KATE
 unset KWRITE
 unset NANO
 unset VI
+unset VIM
 
 export EDITOR
