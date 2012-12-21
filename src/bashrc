@@ -26,7 +26,7 @@ elif [ "$(uname)" == "Darwin" ]; then
     DISTRO="OSX"
     BASE="BSD"
 fi
-export BASE DISTRO
+export BASE DISTRO DISTREL
 
 if [ "${DISTRO}" == "Ubuntu" ] && [ "${DISTREL}" -lt "12" ]; then
 	export TERM="xterm"
