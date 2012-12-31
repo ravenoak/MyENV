@@ -83,7 +83,11 @@ if [ "${ISHELL}" -eq 1 ]; then
 		GITPROMPT=''
     fi
     [ -r "${GITPROMPT}" ] && source $GITPROMPT
-    PS1="$(addColor '[' 39)$(addColor '\u' ${USRCLR})$(addColor '@' 141)$(addColor '\h' 213) $(addColor '\W' 221)$(addColor "\$(__git_ps1)" 83)$(addColor '][' 39)$(__ps1_retval)$(addColor ']\$' 39) "
+    if [ "$(type -t __git_ps1)" == "function" ]; then
+        PS1="$(addColor '[' 39)$(addColor '\u' ${USRCLR})$(addColor '@' 141)$(addColor '\h' 213) $(addColor '\W' 221)$(addColor "\$(__git_ps1)" 83)$(addColor '][' 39)$(__ps1_retval)$(addColor ']\$' 39) "
+    else
+        PS1="$(addColor '[' 39)$(addColor '\u' ${USRCLR})$(addColor '@' 141)$(addColor '\h' 213) $(addColor '\W' 221)$(addColor '][' 39)$(__ps1_retval)$(addColor ']\$' 39) "
+    fi
 
     GREP_COLOR="1;33;40"
     LESS="-QR"
