@@ -78,9 +78,9 @@ if [ "${ISHELL}" -eq 1 ]; then
     [ -r ~/.etc/term_colors.profile ] && . ~/.etc/term_colors.profile
     
     if [ "${DISTRO}" == "OSX" ]; then
-        GITPROMPT=/opt/local/share/doc/git-core/contrib/completion/git-prompt.sh
-	else
-		GITPROMPT=''
+        GITPROMPT='/opt/local/share/doc/git-core/contrib/completion/git-prompt.sh'
+    else
+        GITPROMPT='/usr/share/git-core/contrib/completion/git-prompt.sh'
     fi
     [ -r "${GITPROMPT}" ] && source $GITPROMPT
     if [ "$(type -t __git_ps1)" == "function" ]; then
