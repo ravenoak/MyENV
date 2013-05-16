@@ -1,3 +1,11 @@
 #!/bin/bash
+# PATH control
 
-export PATH=$HOME/.bin:$PATH
+PATH=${HOME}/.bin:${PATH}
+
+if [ "${DISTRO}" == "OSX" ]; then
+    PATH=/opt/local/bin:/opt/local/sbin:${PATH}
+fi
+
+
+export PATH

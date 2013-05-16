@@ -33,3 +33,20 @@ __detect_distro() {
 	fi
 	export BASE DISTRO DISTREL
 }
+
+__is_interactive() {
+	# Reads ISHELL variable then execs either true or false for return value
+	
+	if [ "${ISHELL}" -eq 1 ]; then
+		/bin/true
+	else
+		/bin/false
+	fi
+}
+
+__echo() {
+	
+	(( __is_interactive )) && echo ${1}
+	
+}
+

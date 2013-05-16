@@ -2,31 +2,13 @@
 
 # TODO: Stick CDPATH in here somewhere
 
+[ -r "${HOME}/.lib/myenv.sh" ] && source ${HOME}/.lib/myenv.sh || echo "Can't find MyENV libs"
+
 ISHELL=0
 case "$-" in *i*) ISHELL=1;; esac
 export ISHELL
 
-# Find out which distro we are on...
-DISTRO='unknown'
-BASE='unknown'
-
-lsb_release=$(which lsb_release 2> /dev/null)
-if [ "X${lsb_release}" != "X" ]; then
-	DISTRO=$(lsb_release -si)
-	[ "${DISTRO}" == "Fedora" ] && BASE="RH"
-	[ "${DISTRO}" == "Ubuntu" ] && BASE="Debian"
-	DISTREL=$(lsb_release -sr)
-	[ "${DISTRO}" == "Ubuntu" ] && DISTREL=$(echo ${DISTREL} | awk -F. '{ print $1 }')
-elif [ -r "/etc/redhat-release" ]; then
-    BASE="RH"
-    $(grep -q CentOS /etc/redhat-release) && DISTRO='CentOS'
-    $(grep -q Fedora /etc/redhat-release) && DISTRO='Fedora'
-    $(grep -q "Red Hat" /etc/redhat-release) && DISTRO='RHEL'
-elif [ "$(uname)" == "Darwin" ]; then
-    DISTRO="OSX"
-    BASE="BSD"
-fi
-export BASE DISTRO DISTREL
+__detect_distro
 
 if [ "${DISTRO}" == "Ubuntu" ] && [ "${DISTREL}" -lt "12" ]; then
 	export TERM="xterm"
@@ -52,12 +34,6 @@ for I in ~/.bashrc.d/*.rc; do
 done
 unset I
 
-# PATH control
-if [ "${DISTRO}" == "OSX" ]; then
-    PATH=/opt/local/bin:/opt/local/sbin:$PATH
-    export PATH
-fi
-
 # Only run this stuff if we are an interactive shell
 if [ "${ISHELL}" -eq 1 ]; then
 	
@@ -82,7 +58,8 @@ if [ "${ISHELL}" -eq 1 ]; then
     else
         GITPROMPT='/usr/share/git-core/contrib/completion/git-prompt.sh'
     fi
-    [ -r "${GITPROMPT}" ] && source $GITPROMPT
+    GITPROMPT_FALLBACK="${HOME}/.lib/git-prompt.sh"
+	[ -r "${GITPROMPT}" ] && source ${GITPROMPT} || [ -r "${GITPROMPT_FALLBACK}" ] && source ${GITPROMPT_FALLBACK} || __echo "Git prompt broken, incomplete MyENV"
     if [ "$(type -t __git_ps1)" == "function" ]; then
         PS1="$(addColor '[' 39)$(addColor '\u' ${USRCLR})$(addColor '@' 141)$(addColor '\h' 213) $(addColor '\W' 221)$(addColor "\$(__git_ps1)" 83)$(addColor '][' 39)$(__ps1_retval)$(addColor ']\$' 39) "
     else
@@ -98,9 +75,9 @@ if [ "${ISHELL}" -eq 1 ]; then
 
 	# /opt/local/bin/gdircolors is provided by 'coreutils' in macports
     if [ "${DISTRO}" == "OSX" ] && [ -x "/opt/local/bin/gdircolors" ]; then
-        eval "`gdircolors -b $HOME/.dir_colors`"
+        eval "`gdircolors -b ${HOME}/.dir_colors`"
     elif [ -x "/usr/bin/dircolors" ]; then
-        eval "`dircolors -b $HOME/.dir_colors`"
+        eval "`dircolors -b ${HOME}/.dir_colors`"
     fi
     
     export GREP_COLOR LESS PS1 GIT_PS1_SHOWDIRTYSTATE GIT_PS1_SHOWSTASHSTATE GIT_PS1_SHOWUNTRACKEDFILES
