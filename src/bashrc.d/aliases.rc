@@ -6,6 +6,5 @@ fi
 alias grep='grep --color=always'
 alias hi='highlight -t 4 -O xterm256 -s andes -lz '
 alias ssh='TERM=xterm-256color ssh '
-alias xssh='TERM=xterm ssh '
 alias nssh='TERM=xterm ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no '
-alias rssh='ssh -l root '
+alias rssh='TERM=xterm ssh -l root '
