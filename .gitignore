@@ -1,0 +1,7 @@
+.waf-*
+.buildpath
+.project
+build
+MyENV-*.tar.bz2
+.pydevproject
+.lock-waf*
