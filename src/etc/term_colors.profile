@@ -4,7 +4,7 @@
 # http://www.frexx.de/xterm-256-notes/
 
 # This is to determine how many colors we have available to us to use.
-numColors=`tput colors`
+numColors=$(tput colors)
 
 ESC="\033["
 __color_fg256="38;5;"
@@ -46,7 +46,7 @@ __ps1_retval() {
     echo -ne "\[\033[38;5;\$(__retval_color)m\]\${__retval}$(resetColor)"
 }
 
-if [ "${USER}" == "root" ]; then
+if [[ "${USER}" == "root" ]]; then
     USRCLR=196
 else
     USRCLR=123

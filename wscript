@@ -31,7 +31,7 @@ def dist(ctx):
                 '
     
 def build(bld):
-    bashrcd_files = glob('src/bashrc.d/*.rc*')
+    myenvrcd_files = glob('src/myenvrc.d/*.rc*')
     lib_files = glob('src/lib/*.sh')
     etc_files = glob('src/etc/*')
     nanorcd_files = glob('src/nanorc.d/*.nanorc')
@@ -39,12 +39,15 @@ def build(bld):
     vim_syntax_files = glob('src/vim/syntax/*.vim')
     
     bld.install_as('${PREFIX}/.bash_profile', 'src/bash_profile')
+    bld.install_as('${PREFIX}/.profile', 'src/profile')
     bld.install_as('${PREFIX}/.bashrc', 'src/bashrc')
+    bld.install_as('${PREFIX}/.myenvrc', 'src/myenvrc')
+    bld.install_as('${PREFIX}/.zshrc', 'src/zshrc')
     bld.install_as('${PREFIX}/.dir_colors', 'src/dir_colors')
     bld.install_as('${PREFIX}/.nanorc', 'src/nanorc')
     bld.install_as('${PREFIX}/.vimrc', 'src/vimrc')
     
-    bld.install_files('${PREFIX}/.bashrc.d', bashrcd_files)
+    bld.install_files('${PREFIX}/.myenvrc.d', myenvrcd_files)
     bld.install_files('${PREFIX}/.lib', lib_files)
     bld.install_files('${PREFIX}/.nanorc.d', nanorcd_files)
     bld.install_files('${PREFIX}/.vim/ftplugin', vim_ftplugin_files)

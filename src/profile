@@ -1,4 +1,5 @@
-# .bashrc
+#!/bin/sh
+# .profile
 
 # TODO: Stick CDPATH in here somewhere
 
@@ -16,39 +17,13 @@ fi
 __ENVIRO=""
 export __ENVIRO
 
-# Determine where global bash definitions are
-if [[ "${DISTRO}" == "Ubuntu" ]]; then
-	BASHRC="/etc/bash.bashrc"
-else
-	BASHRC="/etc/bashrc"
-fi
-
-# Source global definitions
-if [[ -r "${BASHRC}" ]]; then
-    source ${BASHRC}
-fi
-
-# Source non-interactive scripts in .d
-for I in ~/.bashrc.d/*.rc; do
-    [[ -r "${I}" ]] && source ${I}
-done
-unset I
-
 # Only run this stuff if we are an interactive shell
 if [[ "${ISHELL}" -eq 1 ]]; then
 	
 	# Source the global profile
-	#if [ -r "/etc/profile" ]; then
-	#	source /etc/profile
-	#fi
-    
-    # Source interactive scripts in .d    
-    for I in ~/.bashrc.d/*.rci; do
-        [[ -r "${I}" ]] && source ${I}
-    done   
-    unset I
-    
-    shopt -s histappend
+	if [ -r "/etc/profile" ]; then
+		source /etc/profile
+	fi
     
     # Source terminal color settings and functions
     [[ -r ~/.etc/term_colors.profile ]] && source ~/.etc/term_colors.profile
@@ -60,11 +35,6 @@ if [[ "${ISHELL}" -eq 1 ]]; then
     fi
     GITPROMPT_FALLBACK="${HOME}/.lib/git-prompt.sh"
 	[[ -r "${GITPROMPT}" ]] && source ${GITPROMPT} || [ -r "${GITPROMPT_FALLBACK}" ] && source ${GITPROMPT_FALLBACK} || __echo "Git prompt broken, incomplete MyENV"
-    if [[ "$(type -t __git_ps1)" == "function" ]]; then
-        PS1="$(addColor '[' 39)$(addColor '\u' ${USRCLR})$(addColor '@' 141)$(addColor '\h' 213) $(addColor '\W' 221)$(addColor "\$(__git_ps1)" 83)$(addColor '][' 39)$(__ps1_retval)$(addColor ']\$' 39) "
-    else
-        PS1="$(addColor '[' 39)$(addColor '\u' ${USRCLR})$(addColor '@' 141)$(addColor '\h' 213) $(addColor '\W' 221)$(addColor '][' 39)$(__ps1_retval)$(addColor ']\$' 39) "
-    fi
 
     GREP_COLOR="1;33;40"
     LESS="-QR"

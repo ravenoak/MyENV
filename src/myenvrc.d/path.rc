@@ -3,7 +3,7 @@
 
 PATH=${HOME}/.bin:${PATH}
 
-if [ "${DISTRO}" == "OSX" ]; then
+if [[ "${DISTRO}" == "OSX" ]]; then
     PATH=/opt/local/bin:/opt/local/sbin:${PATH}
 fi
 

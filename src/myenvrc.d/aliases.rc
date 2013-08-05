@@ -1,9 +1,9 @@
 # .bashrc.d/aliases
 
-if [ "${BASE}" != "BSD" ] && [ "${BASE}" != "unknown" ]; then
+if [[ "${BASE}" != "BSD" ]] && [[ "${BASE}" != "unknown" ]]; then
     alias ls='ls --color=always'
 fi
-if [ "${BASE}" == "RH" ]; then
+if [[ "${BASE}" == "RH" ]]; then
     alias view='/usr/bin/vim'
 fi
 alias grep='grep --color=always'

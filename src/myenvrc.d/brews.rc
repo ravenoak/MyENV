@@ -1,12 +1,12 @@
 # .bashrc.d/brews
 
-if [ "${DISTRO}" == "Fedora" ]; then
+if [[ "${DISTRO}" == "Fedora" ]]; then
     PERLBREW_ROOT=${HOME}/Projects/.perlbrew.fedora
     PYTHONBREW_ROOT=${HOME}/Projects/.pythonbrew.fedora
-elif [ "${DISTRO}" == "RHEL" ] || [ "${DISTRO}" == "CentOS" ]; then
+elif [[ "${DISTRO}" == "RHEL" ]] || [[ "${DISTRO}" == "CentOS" ]]; then
     PERLBREW_ROOT=${HOME}/Projects/.perlbrew.rhel
     PYTHONBREW_ROOT=${HOME}/Projects/.pythonbrew.rhel
-elif [ "${DISTRO}" == "OSX" ]; then
+elif [[ "${DISTRO}" == "OSX" ]]; then
     PERLBREW_ROOT=${HOME}/Projects/.perlbrew.osx
     PYTHONBREW_ROOT=${HOME}/Projects/.pythonbrew.osx
 else
@@ -17,5 +17,5 @@ fi
 
 export PERLBREW_ROOT PYTHONBREW_ROOT
 
-[ "x${PERLBREW_ROOT}" != "x" ] && [ -r "${PERLBREW_ROOT}/etc/bashrc" -a -s "${PERLBREW_ROOT}/etc/bashrc" ] && source ${PERLBREW_ROOT}/etc/bashrc
-[ "x${PYTHONBREW_ROOT}" != "x" ] && [ -r "${PYTHONBREW_ROOT}/etc/bashrc" -a -s "${PYTHONBREW_ROOT}/etc/bashrc" ] && source ${PYTHONBREW_ROOT}/etc/bashrc
+[[ "x${PERLBREW_ROOT}" != "x" ]] && [[ -r "${PERLBREW_ROOT}/etc/bashrc" && -s "${PERLBREW_ROOT}/etc/bashrc" ]] && source ${PERLBREW_ROOT}/etc/bashrc
+[[ "x${PYTHONBREW_ROOT}" != "x" ]] && [[ -r "${PYTHONBREW_ROOT}/etc/bashrc" && -s "${PYTHONBREW_ROOT}/etc/bashrc" ]] && source ${PYTHONBREW_ROOT}/etc/bashrc
